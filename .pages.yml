@@ -1,7 +1,7 @@
 media:
   input: src/images
   output: /images
-  categories: [image]
+  categories: [image, video]
   rename: safe
 
 content:
@@ -120,10 +120,14 @@ content:
         label: Telefon (koristi se i za WhatsApp)
         type: string
         description: "U obliku +385 99 123 4567"
-      - name: showreel_youtube_id
-        label: Showreel – YouTube ID
-        type: string
-        description: "Samo ID videa, npr. za youtu.be/AbC123xyz upišite AbC123xyz. Prazno = rezervirano mjesto."
+      - name: pozadinski_video
+        label: Pozadinski video (vrh stranice)
+        type: file
+        description: "Showreel bez zvuka koji se vrti u pozadini. MP4 (H.264), 16:9, 1920 × 1080, 15–30 s, idealno do ~10 MB. Prazno = tamna pozadina."
+      - name: pozadinski_video_poster
+        label: Slika dok se video učitava (16:9)
+        type: image
+        description: "Kadar iz videa; prikazuje se dok se video učitava, na sporim vezama i ako posjetitelj ima isključene animacije."
       - name: fotografija
         label: Fotografija za odjeljak Kako radimo (4:5)
         type: image

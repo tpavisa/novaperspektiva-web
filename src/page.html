@@ -68,19 +68,26 @@ nav a{text-decoration:none}
 nav .btn{min-height:44px;padding:12px 20px;font-size:15px}
 @media (max-width:640px){nav ul li:not(:last-child){display:none}}
 
-/* hero */
-.hero{padding-top:56px;padding-bottom:72px}
+/* hero: pozadinski video preko cijele širine */
+.hero{position:relative;width:100%;aspect-ratio:16/9;min-height:600px;max-height:calc(100svh - 72px);overflow:hidden;display:flex;align-items:center;background:#0E0E0D}
+.hero-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hero-scrim{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(20,20,20,.88) 0%,rgba(20,20,20,.6) 45%,rgba(20,20,20,.3) 100%),linear-gradient(0deg,#141414 0%,rgba(20,20,20,0) 22%)}
+.hero-inner{position:relative;z-index:1;width:100%;padding-top:32px;padding-bottom:32px}
 .hero .frame{padding:clamp(28px,5vw,64px)}
-.hero .bar{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;letter-spacing:.18em;color:var(--muted);margin-bottom:40px}
+.hero .vf{border-color:rgba(244,242,238,.55)}
+.hero .bar{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;letter-spacing:.18em;color:#E6E2DA;margin-bottom:clamp(28px,6vw,72px)}
 .hero .bar div{display:flex;align-items:center;gap:8px}
 .tc{font-variant-numeric:tabular-nums;letter-spacing:.08em}
-.hero .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:48px;align-items:center}
-.hero .copy{display:flex;flex-direction:column;gap:24px}
-.hero h1{font-size:clamp(40px,5.6vw,76px);line-height:1;font-weight:800;font-stretch:108%;letter-spacing:-.01em;text-wrap:balance}
-.reel{position:relative;display:flex;align-items:center;justify-content:center;aspect-ratio:16/9;background:var(--thumb);border:1px solid var(--line);text-decoration:none;color:var(--muted);overflow:hidden}
-.reel video,.reel iframe{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:cover}
-.play{width:76px;height:76px;border-radius:50%;background:var(--text);display:flex;align-items:center;justify-content:center;position:relative}
-.reel .label{position:absolute;left:16px;bottom:14px;font-size:13px;letter-spacing:.12em}
+.hero .copy{display:flex;flex-direction:column;gap:24px;max-width:40rem}
+.hero .eyebrow{color:#E6E2DA}
+.hero .lead{color:#E6E2DA}
+.hero h1{font-size:clamp(40px,5.6vw,80px);line-height:1;font-weight:800;font-stretch:108%;letter-spacing:-.01em;text-wrap:balance}
+.hero .btn.ghost{border-color:rgba(244,242,238,.6);background:rgba(20,20,20,.25)}
+.hero-toggle{position:absolute;right:clamp(16px,3vw,32px);bottom:clamp(16px,3vw,32px);z-index:2;width:44px;height:44px;border-radius:50%;border:1.5px solid rgba(244,242,238,.6);background:rgba(20,20,20,.45);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.hero-toggle:hover{border-color:var(--text)}
+.hero-toggle .i-play{display:none}
+.hero-toggle[aria-pressed="true"] .i-play{display:block}
+.hero-toggle[aria-pressed="true"] .i-pause{display:none}
 
 /* clients */
 .clients{border-top:1px solid var(--line2);border-bottom:1px solid var(--line2)}
@@ -178,14 +185,16 @@ footer .r a{color:var(--muted)}
 
 <main id="top">
 
-<section class="wrap hero">
-  <div class="vf-box frame">
-    <span class="vf lg tl"></span><span class="vf lg tr"></span><span class="vf lg bl"></span><span class="vf lg br"></span>
-    <div class="bar" aria-hidden="true">
-      <div><span class="dot rec"></span>REC</div>
-      <div class="tc" id="tc">00:00:00:00</div>
-    </div>
-    <div class="grid">
+<section class="hero" aria-label="Uvod">
+<!--HERO_MEDIA-->
+  <div class="hero-scrim"></div>
+  <div class="wrap hero-inner">
+    <div class="vf-box frame">
+      <span class="vf lg tl"></span><span class="vf lg tr"></span><span class="vf lg bl"></span><span class="vf lg br"></span>
+      <div class="bar" aria-hidden="true">
+        <div><span class="dot rec"></span>REC</div>
+        <div class="tc" id="tc">00:00:00:00</div>
+      </div>
       <div class="copy">
         <div class="eyebrow">Video produkcija</div>
         <h1>Od ideje do objave.</h1>
@@ -195,9 +204,9 @@ footer .r a{color:var(--muted)}
           <a class="btn ghost" href="#kontakt">Javite se</a>
         </div>
       </div>
-<!--SHOWREEL-->
     </div>
   </div>
+<!--HERO_TOGGLE-->
 </section>
 
 <section class="clients" aria-label="Klijenti">
@@ -322,18 +331,27 @@ footer .r a{color:var(--muted)}
   });
 })();
 
-// Vremenski kod u heroju
+// Pozadinski video: pauza/play, poštivanje "smanji pokrete", vremenski kod
 (function () {
-  var el = document.getElementById('tc');
-  if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  var start = Date.now();
+  var video = document.getElementById('heroVideo');
+  var btn = document.getElementById('heroToggle');
+  var tc = document.getElementById('tc');
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var pad = function (n) { return String(n).padStart(2, '0'); };
-  setInterval(function () {
-    var t = (Date.now() - start) / 1000;
-    el.textContent = pad(Math.floor(t / 3600)) + ':' + pad(Math.floor(t / 60) % 60) + ':' + pad(Math.floor(t) % 60) + ':' + pad(Math.floor((t % 1) * 25));
-  }, 40);
+  var fmt = function (t) { return pad(Math.floor(t / 3600)) + ':' + pad(Math.floor(t / 60) % 60) + ':' + pad(Math.floor(t) % 60) + ':' + pad(Math.floor((t % 1) * 25)); };
+  if (video) {
+    var setPaused = function (p) {
+      if (p) video.pause(); else { var pr = video.play(); if (pr && pr.catch) pr.catch(function () {}); }
+      if (btn) { btn.setAttribute('aria-pressed', p ? 'true' : 'false'); btn.setAttribute('aria-label', p ? 'Pokreni pozadinski video' : 'Pauziraj pozadinski video'); }
+    };
+    if (reduce) setPaused(true);
+    if (btn) btn.addEventListener('click', function () { setPaused(!video.paused ? true : false); });
+    if (tc) setInterval(function () { tc.textContent = fmt(video.currentTime || 0); }, 40);
+  } else if (tc && !reduce) {
+    var start = Date.now();
+    setInterval(function () { tc.textContent = fmt((Date.now() - start) / 1000); }, 40);
+  }
 })();
-
 </script>
 </body>
 </html>

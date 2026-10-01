@@ -32,7 +32,6 @@ const radovi = (fs.existsSync(radDir) ? fs.readdirSync(radDir) : [])
 const BOJE_KATEGORIJA = { kultura: "#53B1FB", poslovni: "#FCB355", autorski: "#8A56C2" };
 const BOJE_NAVODNIKA = { plava: "#53B1FB", narancasta: "#FCB355", koraljna: "#FA6664", ljubicasta: "#8A56C2", tirkizna: "#2EF1E9" };
 const PLAY_SMALL = '<svg width="14" height="14" viewBox="0 0 24 24" fill="#F4F2EE" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>';
-const PLAY_BIG = '<svg width="26" height="26" viewBox="0 0 24 24" fill="#141414" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>';
 const CORNERS = '<span class="vf s tl"></span><span class="vf s tr"></span><span class="vf s bl"></span><span class="vf s br"></span>';
 const QUOTE_PATH = "M0 26V15C0 6.5 4.5 1.5 13 0l1.5 4C9.5 5.5 7.5 8.5 7.3 12H13v14zm19 0V15C19 6.5 23.5 1.5 32 0l1.5 4c-5 1.5-7 4.5-7.2 8H32v14z";
 
@@ -57,12 +56,22 @@ parts.RADOVI = radovi.map((w) => {
     </${tag}>`;
 }).join("\n");
 
-parts.SHOWREEL = postavke.showreel_youtube_id
-  ? `      <div class="reel"><iframe src="https://www.youtube-nocookie.com/embed/${encodeURIComponent(postavke.showreel_youtube_id.trim())}?rel=0" title="Showreel – Nova Perspektiva" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`
-  : `      <a class="reel" href="#radovi" aria-label="Pogledaj radove">
-        <span class="play">${PLAY_BIG}</span>
-        <span class="label">[SHOWREEL · 60 s]</span>
-      </a>`;
+const VIDEO_TYPES = { mp4: "video/mp4", m4v: "video/mp4", webm: "video/webm", mov: "video/quicktime" };
+const video = (postavke.pozadinski_video || "").trim();
+const poster = (postavke.pozadinski_video_poster || "").trim();
+if (video) {
+  const ext = video.split("?")[0].split(".").pop().toLowerCase();
+  parts.HERO_MEDIA = `  <video class="hero-media" id="heroVideo" autoplay muted loop playsinline preload="auto"${poster ? ` poster="${esc(poster)}"` : ""} aria-hidden="true">
+    <source src="${esc(video)}" type="${VIDEO_TYPES[ext] || "video/mp4"}">
+  </video>`;
+  parts.HERO_TOGGLE = `  <button class="hero-toggle" id="heroToggle" type="button" aria-pressed="false" aria-label="Pauziraj pozadinski video">
+    <svg class="i-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+    <svg class="i-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
+  </button>`;
+} else {
+  parts.HERO_MEDIA = poster ? `  <img class="hero-media" src="${esc(poster)}" alt="">` : "";
+  parts.HERO_TOGGLE = "";
+}
 
 parts.FOTOGRAFIJA = postavke.fotografija
   ? `      <div class="img"><img src="${esc(postavke.fotografija)}" alt="Tomislav Paviša na snimanju" loading="lazy"></div>`
