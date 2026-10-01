@@ -1,10 +1,12 @@
 // Gradi web stranicu: src/page.html + podaci iz src/_data  ->  _site/
-// Pokreće se naredbom "node build.js" (Netlify to radi automatski). Nema vanjskih paketa.
+// Pokreće se naredbom "node build.js" (GitHub Actions to radi automatski pri svakoj izmjeni). Nema vanjskih paketa.
 import fs from "node:fs";
 import path from "node:path";
 
 const SRC = "src";
 const OUT = "_site";
+// Ako stranica nije u korijenu domene (npr. korisnik.github.io/novaperspektiva-web), BASE_PATH je taj prefiks.
+const BASE = (process.env.BASE_PATH || "").replace(/\/+$/, "");
 
 const readJson = (file, fallback) => {
   try { return JSON.parse(fs.readFileSync(file, "utf8")); }
@@ -113,6 +115,7 @@ let html = fs.readFileSync(`${SRC}/page.html`, "utf8");
 for (const [key, value] of Object.entries(parts)) {
   html = html.split(`<!--${key}-->`).join(value);
 }
+if (BASE) html = html.replace(/(\s(?:src|href|poster)=")\/(?!\/)/g, `$1${BASE}/`);
 
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });

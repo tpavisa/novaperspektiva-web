@@ -1,8 +1,8 @@
 # Web stranica Nova Perspektiva
 
 Stranica se gradi iz predloška `src/page.html` i podataka u `src/_data/`.
-Sadržaj uređujete kroz **Pages CMS** (pagescms.org), a **Netlify** nakon svake
-izmjene automatski objavi novu verziju.
+Sadržaj uređujete kroz **Pages CMS** (pagescms.org), a **GitHub Pages** nakon svake
+izmjene automatski objavi novu verziju (`.github/workflows/deploy.yml`).
 
 ## Što je gdje
 
