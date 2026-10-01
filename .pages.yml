@@ -1,0 +1,142 @@
+media:
+  input: src/images
+  output: /images
+  categories: [image]
+  rename: safe
+
+content:
+  - name: radovi
+    label: Radovi
+    type: collection
+    path: src/_data/radovi
+    format: json
+    filename: "{primary}.json"
+    view:
+      fields: [naslov, kategorija, redoslijed, objavljeno]
+      primary: naslov
+      sort: [redoslijed, naslov]
+      default:
+        sort: redoslijed
+        order: asc
+    fields:
+      - name: naslov
+        label: Naslov
+        type: string
+        required: true
+      - name: kategorija
+        label: Kategorija (za filter)
+        type: select
+        required: true
+        options:
+          values:
+            - name: kultura
+              label: Kultura i institucije
+            - name: poslovni
+              label: Poslovni klijenti
+            - name: autorski
+              label: Autorski
+      - name: oznaka
+        label: Oznaka
+        type: string
+        description: "Kratka oznaka iznad naslova, npr. Dokumentarac, Video podcast, Festival"
+      - name: opis
+        label: Opis
+        type: string
+        description: "Jedna rečenica ispod naslova"
+      - name: link
+        label: Link na video
+        type: string
+        description: "YouTube ili drugi link. Ako je prazno, kartica nije klikabilna."
+      - name: slika
+        label: Slika (16:9)
+        type: image
+        description: "Vaš kadar iz videa. Preporuka: JPG ili WebP, 1280 × 720 px, do ~300 KB."
+      - name: redoslijed
+        label: Redoslijed
+        type: number
+        description: "Manji broj = prikazuje se ranije (10, 20, 30...)"
+      - name: objavljeno
+        label: Prikaži na stranici
+        type: boolean
+        default: true
+
+  - name: preporuke
+    label: Preporuke klijenata
+    type: file
+    path: src/_data/preporuke.json
+    format: json
+    list: true
+    fields:
+      - name: citat
+        label: Citat
+        type: text
+        required: true
+      - name: ime
+        label: Ime i prezime
+        type: string
+        required: true
+      - name: funkcija
+        label: Funkcija i organizacija
+        type: string
+        description: "npr. Voditeljica programa, Superval"
+      - name: boja
+        label: Boja navodnika
+        type: select
+        options:
+          values:
+            - name: plava
+              label: Plava
+            - name: narancasta
+              label: Narančasta
+            - name: koraljna
+              label: Koraljna
+            - name: ljubicasta
+              label: Ljubičasta
+            - name: tirkizna
+              label: Tirkizna
+
+  - name: klijenti
+    label: Klijenti (traka)
+    type: file
+    path: src/_data/klijenti.json
+    format: json
+    list: true
+    fields:
+      - name: naziv
+        label: Naziv
+        type: string
+        required: true
+
+  - name: postavke
+    label: Postavke stranice
+    type: file
+    path: src/_data/postavke.json
+    format: json
+    fields:
+      - name: email
+        label: E-mail
+        type: string
+      - name: telefon
+        label: Telefon (koristi se i za WhatsApp)
+        type: string
+        description: "U obliku +385 99 123 4567"
+      - name: showreel_youtube_id
+        label: Showreel – YouTube ID
+        type: string
+        description: "Samo ID videa, npr. za youtu.be/AbC123xyz upišite AbC123xyz. Prazno = rezervirano mjesto."
+      - name: fotografija
+        label: Fotografija za odjeljak Kako radimo (4:5)
+        type: image
+      - name: instagram
+        label: Instagram link
+        type: string
+      - name: youtube
+        label: YouTube link
+        type: string
+      - name: linkedin
+        label: LinkedIn link
+        type: string
+
+settings:
+  content:
+    merge: true

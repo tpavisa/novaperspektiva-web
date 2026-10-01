@@ -1,0 +1,339 @@
+<!doctype html>
+<html lang="hr">
+<head>
+<!-- Ovo je predložak. Komentare s velikim slovima (npr. RADOVI) build.js zamjenjuje podacima iz CMS-a (src/_data). -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nova Perspektiva – video produkcija</title>
+<meta name="description" content="Video produkcija od ideje do objave: dokumentarci, video podcasti, snimanje događanja i kratki videi za društvene mreže za kulturne institucije, festivale, umjetnike i tvrtke.">
+<meta property="og:title" content="Nova Perspektiva – video produkcija">
+<meta property="og:description" content="Pričamo priče kulturnih institucija, festivala, umjetnika i tvrtki kroz dokumentarce, video podcaste, snimke događanja i kratke videe za društvene mreže.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://novaperspektiva.hr/">
+<meta name="theme-color" content="#141414">
+<link rel="icon" href="/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400;62..125,500;62..125,600;62..125,700;62..125,800&display=swap">
+<style>
+:root{
+  --bg:#141414; --surface:#1C1B19; --thumb:#1E1D1B; --line:#2E2D29; --line2:#2A2926;
+  --text:#F4F2EE; --text2:#CFCBC3; --muted:#B9B5AD; --faint:#8F8B83; --corner:#6E6B65;
+  --cyan:#2EF1E9; --blue:#53B1FB; --orange:#FCB355; --coral:#FA6664; --purple:#8A56C2;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Archivo',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--text)}a:hover{color:var(--orange)}
+img{display:block;max-width:100%}
+.wrap{max-width:1200px;margin:0 auto;padding-left:24px;padding-right:24px}
+.eyebrow{font-size:13px;letter-spacing:.3em;color:var(--muted);text-transform:uppercase}
+h1,h2,h3{margin:0}
+h2{font-size:clamp(32px,4vw,52px);font-weight:800;line-height:1.05;text-wrap:balance}
+p{margin:0}
+.lead{font-size:19px;line-height:1.6;color:var(--text2);max-width:34em;text-wrap:pretty}
+
+/* viewfinder corners */
+.vf-box{position:relative}
+.vf{position:absolute;width:22px;height:22px;border:0 solid var(--corner);pointer-events:none}
+.vf.tl{top:0;left:0;border-top-width:2px;border-left-width:2px}
+.vf.tr{top:0;right:0;border-top-width:2px;border-right-width:2px}
+.vf.bl{bottom:0;left:0;border-bottom-width:2px;border-left-width:2px}
+.vf.br{bottom:0;right:0;border-bottom-width:2px;border-right-width:2px}
+.vf.lg{width:40px;height:40px}
+.vf.s{width:14px;height:14px}
+
+.dot{width:10px;height:10px;border-radius:50%;display:block;flex:none}
+.dot.sm{width:8px;height:8px}
+.rec{background:var(--coral);animation:blink 1.6s infinite}
+@keyframes blink{0%,60%{opacity:1}61%,100%{opacity:.25}}
+@media (prefers-reduced-motion:reduce){.rec{animation:none}html{scroll-behavior:auto}}
+
+.btn{display:inline-flex;align-items:center;min-height:48px;padding:14px 24px;border-radius:999px;font-weight:600;font-size:16px;text-decoration:none;transition:filter .15s}
+.btn:hover{filter:brightness(1.08)}
+.btn.solid{background:var(--text);color:var(--bg)}
+.btn.solid:hover{color:var(--bg)}
+.btn.ghost{border:1.5px solid var(--corner);color:var(--text)}
+.btn.ghost:hover{border-color:var(--text);color:var(--text)}
+.btns{display:flex;gap:12px;flex-wrap:wrap}
+
+/* header */
+header{position:sticky;top:0;z-index:10;background:rgba(20,20,20,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line2)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px 24px;flex-wrap:wrap;padding-top:14px;padding-bottom:14px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--text)}
+.brand:hover{color:var(--text)}
+.brand span{font-weight:800;font-stretch:112%;letter-spacing:.04em;font-size:16px;line-height:1.05}
+nav ul{list-style:none;margin:0;padding:0;display:flex;align-items:center;gap:8px 28px;flex-wrap:wrap;font-size:15px;font-weight:500}
+nav a{text-decoration:none}
+nav .btn{min-height:44px;padding:12px 20px;font-size:15px}
+@media (max-width:640px){nav ul li:not(:last-child){display:none}}
+
+/* hero */
+.hero{padding-top:56px;padding-bottom:72px}
+.hero .frame{padding:clamp(28px,5vw,64px)}
+.hero .bar{display:flex;justify-content:space-between;align-items:center;font-size:13px;font-weight:600;letter-spacing:.18em;color:var(--muted);margin-bottom:40px}
+.hero .bar div{display:flex;align-items:center;gap:8px}
+.tc{font-variant-numeric:tabular-nums;letter-spacing:.08em}
+.hero .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:48px;align-items:center}
+.hero .copy{display:flex;flex-direction:column;gap:24px}
+.hero h1{font-size:clamp(40px,5.6vw,76px);line-height:1;font-weight:800;font-stretch:108%;letter-spacing:-.01em;text-wrap:balance}
+.reel{position:relative;display:flex;align-items:center;justify-content:center;aspect-ratio:16/9;background:var(--thumb);border:1px solid var(--line);text-decoration:none;color:var(--muted);overflow:hidden}
+.reel video,.reel iframe{position:absolute;inset:0;width:100%;height:100%;border:0;object-fit:cover}
+.play{width:76px;height:76px;border-radius:50%;background:var(--text);display:flex;align-items:center;justify-content:center;position:relative}
+.reel .label{position:absolute;left:16px;bottom:14px;font-size:13px;letter-spacing:.12em}
+
+/* clients */
+.clients{border-top:1px solid var(--line2);border-bottom:1px solid var(--line2)}
+.clients .wrap{padding-top:28px;padding-bottom:28px;display:flex;flex-wrap:wrap;align-items:center;gap:14px 40px}
+.clients .eyebrow{font-size:12px;letter-spacing:.24em;color:var(--faint)}
+.clients b{font-size:16px;font-weight:600;color:var(--text2)}
+
+section.block{padding-top:96px;padding-bottom:96px}
+.head{display:flex;flex-direction:column;gap:12px;margin-bottom:40px}
+
+/* works */
+.works-head{display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;margin-bottom:36px}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-family:inherit;font-size:14px;font-weight:600;padding:10px 18px;min-height:44px;border-radius:999px;cursor:pointer;background:transparent;color:var(--text2);border:1.5px solid #4A4741}
+.chip:hover{border-color:var(--text2)}
+.chip[aria-pressed="true"]{background:var(--text);color:var(--bg);border-color:var(--text)}
+.works{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr));gap:40px 28px}
+.card{text-decoration:none;color:var(--text);display:flex;flex-direction:column;gap:14px}
+.card:hover{color:var(--text)}
+.card[hidden]{display:none}
+.thumb{position:relative;aspect-ratio:16/9;background:var(--thumb);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;overflow:hidden;transition:border-color .15s}
+.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.card:hover .thumb{border-color:#5A5750}
+.thumb .corners{position:absolute;inset:12px;z-index:1}
+.thumb .ph{font-size:12px;letter-spacing:.14em;color:var(--corner)}
+.thumb .mini{position:absolute;right:14px;bottom:12px;z-index:1;width:40px;height:40px;border-radius:50%;border:1.5px solid var(--faint);background:rgba(20,20,20,.55);display:flex;align-items:center;justify-content:center}
+.tag{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.card h3{font-size:22px;font-weight:800;line-height:1.2}
+.card p{font-size:16px;line-height:1.5;color:var(--muted);margin-top:6px}
+
+/* services */
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr));gap:24px}
+.panel{background:var(--surface);border:1px solid var(--line);padding:36px;display:flex;flex-direction:column;gap:20px}
+.panel h3{font-size:28px;font-weight:800;line-height:1.15}
+.panel ul{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;font-size:17px;color:var(--text2)}
+.panel li{padding-top:12px;border-top:1px solid var(--line)}
+.kicker{display:flex;align-items:center;gap:10px;font-size:13px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.steps{margin-top:64px;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));border-top:1px solid var(--line);list-style:none;padding:0}
+.steps li{padding:28px 24px 0 0;display:flex;flex-direction:column;gap:10px}
+.steps .n{font-size:15px;font-weight:800;font-variant-numeric:tabular-nums}
+.steps b{font-size:21px;font-weight:800}
+.steps span{font-size:16px;line-height:1.5;color:var(--muted)}
+
+/* about */
+.about{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:56px;align-items:center}
+.photo{padding:18px}
+.photo .img{aspect-ratio:4/5;background:var(--thumb);display:flex;align-items:center;justify-content:center;font-size:13px;letter-spacing:.14em;color:var(--corner);overflow:hidden}
+.photo .img img{width:100%;height:100%;object-fit:cover}
+.photo .cap{margin-top:14px;font-size:14px;color:var(--muted)}
+.photo .cap b{color:var(--text);font-weight:600}
+.about .copy{display:flex;flex-direction:column;gap:22px}
+.points{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:16px;margin-top:8px}
+.points div{border-top:1px solid #3A3833;padding-top:14px;display:flex;flex-direction:column;gap:6px}
+.points b{font-size:17px;font-weight:700}
+.points span{font-size:15px;line-height:1.5;color:var(--muted)}
+
+/* testimonials */
+.quotes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,320px),1fr));gap:24px}
+.quote{margin:0;background:var(--surface);padding:36px 32px 32px;display:flex;flex-direction:column;justify-content:space-between;gap:28px}
+.quote blockquote{margin:16px 0 0;font-size:19px;line-height:1.55;color:#E6E2DA;text-wrap:pretty}
+.quote figcaption{display:flex;flex-direction:column;gap:2px;padding-top:18px;border-top:1px solid var(--line)}
+.quote figcaption b{font-size:16px}
+.quote figcaption span{font-size:14px;color:var(--muted)}
+
+/* contact */
+.contact{background:var(--surface);padding:clamp(32px,6vw,80px)}
+.contact .in{display:flex;flex-direction:column;gap:22px;align-items:flex-start}
+.contact h2{font-size:clamp(36px,5vw,68px);line-height:1.02}
+
+footer{border-top:1px solid var(--line2)}
+footer .wrap{padding-top:28px;padding-bottom:28px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;font-size:14px;color:var(--faint)}
+footer .l{display:flex;align-items:center;gap:10px}
+footer .r{display:flex;gap:20px}
+footer .r a{color:var(--muted)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#top" aria-label="Nova Perspektiva – početna">
+      <img src="/logo.svg" alt="" width="36" height="36">
+      <span>NOVA<br>PERSPEKTIVA</span>
+    </a>
+    <nav aria-label="Glavna navigacija">
+      <ul>
+        <li><a href="#radovi">Radovi</a></li>
+        <li><a href="#usluge">Usluge</a></li>
+        <li><a href="#kako-radimo">Kako radimo</a></li>
+        <li><a class="btn solid" href="#kontakt">Pošalji upit</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+
+<section class="wrap hero">
+  <div class="vf-box frame">
+    <span class="vf lg tl"></span><span class="vf lg tr"></span><span class="vf lg bl"></span><span class="vf lg br"></span>
+    <div class="bar" aria-hidden="true">
+      <div><span class="dot rec"></span>REC</div>
+      <div class="tc" id="tc">00:00:00:00</div>
+    </div>
+    <div class="grid">
+      <div class="copy">
+        <div class="eyebrow">Video produkcija</div>
+        <h1>Od ideje do objave.</h1>
+        <p class="lead">Pričamo priče kulturnih institucija, festivala, umjetnika i tvrtki kroz dokumentarce, video podcaste, snimke događanja i kratke videe za društvene mreže.</p>
+        <div class="btns" style="margin-top:8px">
+          <a class="btn solid" href="#radovi">Pogledaj radove</a>
+          <a class="btn ghost" href="#kontakt">Javite se</a>
+        </div>
+      </div>
+<!--SHOWREEL-->
+    </div>
+  </div>
+</section>
+
+<section class="clients" aria-label="Klijenti">
+  <div class="wrap">
+    <span class="eyebrow">Surađivali smo</span>
+<!--KLIJENTI-->
+  </div>
+</section>
+
+<section id="radovi" class="wrap block" style="padding-bottom:40px">
+  <div class="works-head">
+    <div class="head" style="margin:0">
+      <div class="eyebrow">Radovi</div>
+      <h2>Odabrani projekti</h2>
+    </div>
+    <div class="chips" role="group" aria-label="Filtriraj radove">
+      <button class="chip" type="button" data-filter="sve" aria-pressed="true">Sve</button>
+      <button class="chip" type="button" data-filter="kultura" aria-pressed="false">Kultura i institucije</button>
+      <button class="chip" type="button" data-filter="poslovni" aria-pressed="false">Poslovni klijenti</button>
+      <button class="chip" type="button" data-filter="autorski" aria-pressed="false">Autorski</button>
+    </div>
+  </div>
+
+  <div class="works" id="works">
+<!--RADOVI-->
+  </div>
+</section>
+
+<section id="usluge" class="wrap block">
+  <div class="head">
+    <div class="eyebrow">Usluge</div>
+    <h2>Cijela produkcija na jednom mjestu</h2>
+  </div>
+  <div class="two">
+    <div class="panel">
+      <div class="kicker"><span class="dot" style="background:var(--blue)"></span>Kultura i institucije</div>
+      <h3>Muzeji, festivali, fakulteti, udruge i EU projekti</h3>
+      <ul>
+        <li>Dokumentarni video</li>
+        <li>Snimanje događanja, predstava i izložbi</li>
+        <li>Video podcasti</li>
+        <li>Video dokumentacija projekata</li>
+      </ul>
+    </div>
+    <div class="panel">
+      <div class="kicker"><span class="dot" style="background:var(--orange)"></span>Poslovni klijenti</div>
+      <h3>Tvrtke koje trebaju redovit i kvalitetan video</h3>
+      <ul>
+        <li>Promotivni video</li>
+        <li>Kratki videi za društvene mreže</li>
+        <li>Mjesečni paketi sadržaja</li>
+        <li>Video za web i prezentacije</li>
+      </ul>
+    </div>
+  </div>
+  <ol class="steps">
+    <li><span class="n" style="color:var(--cyan)">01</span><b>Ideja i scenarij</b><span>Zajedno definiramo cilj, publiku i priču.</span></li>
+    <li><span class="n" style="color:var(--blue)">02</span><b>Snimanje</b><span>Planiranje snimanja i realizacija na terenu.</span></li>
+    <li><span class="n" style="color:var(--orange)">03</span><b>Montaža</b><span>Montaža, zvuk, boja i titlovi.</span></li>
+    <li><span class="n" style="color:var(--coral)">04</span><b>Objava</b><span>Formati za web, YouTube i društvene mreže.</span></li>
+  </ol>
+</section>
+
+<section id="kako-radimo" class="wrap block">
+  <div class="about">
+    <div class="vf-box photo">
+      <span class="vf tl"></span><span class="vf tr"></span><span class="vf bl"></span><span class="vf br"></span>
+<!--FOTOGRAFIJA-->
+      <div class="cap"><b>Tomislav Paviša</b> · producent i osnivač</div>
+    </div>
+    <div class="copy">
+      <div class="eyebrow">Kako radimo</div>
+      <h2>Ekipa po mjeri projekta</h2>
+      <p class="lead">Nova Perspektiva je video produkcija koju vodi producent Tomislav Paviša. Za svaki projekt okupljamo ekipu prema njegovim potrebama: od jednog snimatelja za kratki video do veće ekipe za snimanje događanja.</p>
+      <p class="lead">Vi imate jednu kontakt osobu od prvog razgovora do isporuke, a projekt dobiva točno onoliko ljudi koliko mu treba.</p>
+      <div class="points">
+        <div><span class="dot sm" style="background:var(--cyan)"></span><b>Jedna kontakt osoba</b><span>Producent koji vodi projekt od ideje do objave.</span></div>
+        <div><span class="dot sm" style="background:var(--orange)"></span><b>Provjereni suradnici</b><span>Dodatni snimatelji i stručnjaci kad ih projekt traži.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!--PREPORUKE-->
+
+<section id="kontakt" class="wrap block" style="padding-top:40px">
+  <div class="vf-box contact">
+    <span class="vf lg tl"></span><span class="vf lg tr"></span><span class="vf lg bl"></span><span class="vf lg br"></span>
+    <div class="in">
+      <div class="kicker" style="letter-spacing:.18em"><span class="dot rec"></span>KONTAKT</div>
+      <h2>Imate ideju za video?</h2>
+      <p class="lead">Javite se i ostvarimo vaše ideje zajedno.</p>
+      <div class="btns" style="margin-top:8px">
+<!--KONTAKT-->
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="l"><img src="/logo.svg" alt="" width="24" height="24"><span>© <!--GODINA--> Nova Perspektiva, obrt za video produkciju</span></div>
+    <div class="r">
+<!--DRUSTVENE-->
+    </div>
+  </div>
+</footer>
+
+<script>
+// Filter radova
+(function () {
+  var chips = document.querySelectorAll('.chip');
+  var cards = document.querySelectorAll('#works .card');
+  chips.forEach(function (chip) {
+    chip.addEventListener('click', function () {
+      var f = chip.getAttribute('data-filter');
+      chips.forEach(function (c) { c.setAttribute('aria-pressed', c === chip ? 'true' : 'false'); });
+      cards.forEach(function (card) { card.hidden = !(f === 'sve' || card.getAttribute('data-cat') === f); });
+    });
+  });
+})();
+
+// Vremenski kod u heroju
+(function () {
+  var el = document.getElementById('tc');
+  if (!el || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  var start = Date.now();
+  var pad = function (n) { return String(n).padStart(2, '0'); };
+  setInterval(function () {
+    var t = (Date.now() - start) / 1000;
+    el.textContent = pad(Math.floor(t / 3600)) + ':' + pad(Math.floor(t / 60) % 60) + ':' + pad(Math.floor(t) % 60) + ':' + pad(Math.floor((t % 1) * 25));
+  }, 40);
+})();
+
+</script>
+</body>
+</html>

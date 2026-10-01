@@ -1,0 +1,9 @@
+{
+  "name": "novaperspektiva-web",
+  "private": true,
+  "type": "module",
+  "description": "Web stranica Nova Perspektiva",
+  "scripts": {
+    "build": "node build.js"
+  }
+}
