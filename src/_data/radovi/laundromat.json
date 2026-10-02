@@ -2,8 +2,9 @@
   "naslov": "Laundromat",
   "kategorija": "poslovni",
   "oznaka": "Društvene mreže",
-  "opis": "Kratki videi za društvene mreže",
+  "opis": "Kratki videi za web i društvene mreže",
   "slika": "/images/laundromatwide.webp",
   "redoslijed": 40,
-  "objavljeno": true
+  "objavljeno": true,
+  "link": "https://youtu.be/ipOrh4Qwa54?si=flaArBmFwoJdziTN"
 }
