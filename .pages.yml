@@ -140,6 +140,10 @@ content:
       - name: linkedin
         label: LinkedIn link
         type: string
+      - name: umami_id
+        label: Umami Website ID (analitika bez kolačića)
+        type: string
+        description: "Prazno = analitika isključena."
 
 settings:
   content:

@@ -37,8 +37,19 @@ const PLAY_SMALL = '<svg width="14" height="14" viewBox="0 0 24 24" fill="#F4F2E
 const CORNERS = '<span class="vf s tl"></span><span class="vf s tr"></span><span class="vf s bl"></span><span class="vf s br"></span>';
 const QUOTE_PATH = "M0 26V15C0 6.5 4.5 1.5 13 0l1.5 4C9.5 5.5 7.5 8.5 7.3 12H13v14zm19 0V15C19 6.5 23.5 1.5 32 0l1.5 4c-5 1.5-7 4.5-7.2 8H32v14z";
 
+// ---- analitika (Umami, bez kolačića); prazno polje = bez analitike ----
+const umami = (postavke.umami_id || "").trim();
+const ev = (naziv) => (umami ? ` data-umami-event="${esc(naziv)}"` : "");
+
 // ---- dijelovi stranice ----
 const parts = {};
+
+parts.ANALITIKA = umami
+  ? `<script defer src="https://cloud.umami.is/script.js" data-website-id="${esc(umami)}" data-domains="novaperspektiva.hr,www.novaperspektiva.hr"></script>`
+  : "";
+parts.NAPOMENA = umami
+  ? `    <p class="note">Stranica koristi anonimnu statistiku posjeta bez kolačića i bez praćenja pojedinaca.</p>`
+  : "";
 
 parts.KLIJENTI = klijenti.filter((k) => k && k.naziv)
   .map((k) => `    <b>${esc(k.naziv)}</b>`).join("\n");
@@ -52,7 +63,7 @@ parts.RADOVI = radovi.map((w) => {
   const oznaka = w.oznaka
     ? `\n      <div class="tag"><span class="dot sm" style="background:${BOJE_KATEGORIJA[w.kategorija] || "#B9B5AD"}"></span>${esc(w.oznaka)}</div>`
     : "";
-  return `    <${tag} class="card" data-cat="${esc(w.kategorija || "")}"${linkAttrs}>
+  return `    <${tag} class="card" data-cat="${esc(w.kategorija || "")}"${linkAttrs}${w.link ? ev("Rad: " + w.naslov) : ""}>
       <div class="thumb">${thumb}<span class="corners">${CORNERS}</span>${w.link ? `<span class="mini">${PLAY_SMALL}</span>` : ""}</div>${oznaka}
       <div><h3>${esc(w.naslov)}</h3>${w.opis ? `<p>${esc(w.opis)}</p>` : ""}</div>
     </${tag}>`;
@@ -99,14 +110,14 @@ ${prep.map((p) => `    <figure class="quote vf-box">
 
 const tel = digits(postavke.telefon);
 parts.KONTAKT = [
-  postavke.email && `        <a class="btn solid" href="mailto:${esc(postavke.email)}">${esc(postavke.email)}</a>`,
-  tel && `        <a class="btn ghost" href="https://wa.me/${tel.replace("+", "")}" target="_blank" rel="noopener">WhatsApp</a>`,
-  tel && `        <a class="btn ghost" href="tel:${tel}">${esc(postavke.telefon)}</a>`,
+  postavke.email && `        <a class="btn solid" href="mailto:${esc(postavke.email)}"${ev("Kontakt: e-mail")}>${esc(postavke.email)}</a>`,
+  tel && `        <a class="btn ghost" href="https://wa.me/${tel.replace("+", "")}" target="_blank" rel="noopener"${ev("Kontakt: WhatsApp")}>WhatsApp</a>`,
+  tel && `        <a class="btn ghost" href="tel:${tel}"${ev("Kontakt: telefon")}>${esc(postavke.telefon)}</a>`,
 ].filter(Boolean).join("\n");
 
 parts.DRUSTVENE = [["instagram", "Instagram"], ["youtube", "YouTube"], ["linkedin", "LinkedIn"]]
   .filter(([k]) => postavke[k])
-  .map(([k, label]) => `      <a href="${esc(postavke[k])}" target="_blank" rel="noopener">${label}</a>`).join("\n");
+  .map(([k, label]) => `      <a href="${esc(postavke[k])}" target="_blank" rel="noopener"${ev("Mreža: " + label)}>${label}</a>`).join("\n");
 
 parts.GODINA = String(new Date().getFullYear());
 
