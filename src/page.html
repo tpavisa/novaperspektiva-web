@@ -12,10 +12,10 @@
 <meta property="og:url" content="https://novaperspektiva.hr/">
 <meta name="theme-color" content="#141414">
 <link rel="icon" href="/logo.svg" type="image/svg+xml">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400;62..125,500;62..125,600;62..125,700;62..125,800&display=swap">
+<link rel="preload" href="/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+/* Archivo se poslužuje s vlastite domene (src/fonts), bez veze prema Googleu */
+@font-face{font-family:'Archivo';src:url(/fonts/archivo.woff2) format('woff2');font-weight:400 800;font-stretch:100% 112%;font-style:normal;font-display:swap}
 :root{
   --bg:#141414; --surface:#1C1B19; --thumb:#1E1D1B; --line:#2E2D29; --line2:#2A2926;
   --text:#F4F2EE; --text2:#CFCBC3; --muted:#B9B5AD; --faint:#8F8B83; --corner:#6E6B65;

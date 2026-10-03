@@ -127,11 +127,13 @@ for (const [key, value] of Object.entries(parts)) {
   html = html.split(`<!--${key}-->`).join(value);
 }
 if (BASE) html = html.replace(/(\s(?:src|href|poster)=")\/(?!\/)/g, `$1${BASE}/`);
+if (BASE) html = html.replace(/url\(\/fonts\//g, `url(${BASE}/fonts/`);
 
 fs.rmSync(OUT, { recursive: true, force: true });
 fs.mkdirSync(OUT, { recursive: true });
 fs.writeFileSync(`${OUT}/index.html`, html);
 fs.copyFileSync(`${SRC}/logo.svg`, `${OUT}/logo.svg`);
 if (fs.existsSync(`${SRC}/images`)) fs.cpSync(`${SRC}/images`, `${OUT}/images`, { recursive: true });
+if (fs.existsSync(`${SRC}/fonts`)) fs.cpSync(`${SRC}/fonts`, `${OUT}/fonts`, { recursive: true });
 
 console.log(`Gotovo: ${radovi.length} radova, ${prep.length} preporuka -> ${OUT}/index.html`);
