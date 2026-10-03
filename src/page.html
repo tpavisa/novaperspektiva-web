@@ -12,6 +12,7 @@
 <meta property="og:url" content="https://novaperspektiva.hr/">
 <meta name="theme-color" content="#141414">
 <link rel="icon" href="/logo.svg" type="image/svg+xml">
+<!--PRELOAD-->
 <link rel="preload" href="/fonts/archivo.woff2" as="font" type="font/woff2" crossorigin>
 <style>
 /* Archivo se poslužuje s vlastite domene (src/fonts), bez veze prema Googleu */
@@ -344,11 +345,19 @@ footer .note{flex-basis:100%;margin:0;font-size:13px;line-height:1.5;color:var(-
   var pad = function (n) { return String(n).padStart(2, '0'); };
   var fmt = function (t) { return pad(Math.floor(t / 3600)) + ':' + pad(Math.floor(t / 60) % 60) + ':' + pad(Math.floor(t) % 60) + ':' + pad(Math.floor((t % 1) * 25)); };
   if (video) {
+    var ensureSrc = function () {
+      if (video.getAttribute('src')) return;
+      var mob = video.getAttribute('data-src-mobitel');
+      var src = (mob && window.matchMedia('(max-width: 760px)').matches) ? mob : video.getAttribute('data-src');
+      if (src) video.src = src;
+    };
     var setPaused = function (p) {
-      if (p) video.pause(); else { var pr = video.play(); if (pr && pr.catch) pr.catch(function () {}); }
+      if (p) video.pause(); else { ensureSrc(); var pr = video.play(); if (pr && pr.catch) pr.catch(function () {}); }
       if (btn) { btn.setAttribute('aria-pressed', p ? 'true' : 'false'); btn.setAttribute('aria-label', p ? 'Pokreni pozadinski video' : 'Pauziraj pozadinski video'); }
     };
-    if (reduce) setPaused(true);
+    // Video kreće tek kad se stranica učita, da ne usporava prikaz naslovnice
+    var start = function () { setPaused(reduce); };
+    if (document.readyState === 'complete') start(); else window.addEventListener('load', start);
     if (btn) btn.addEventListener('click', function () { setPaused(!video.paused ? true : false); });
     if (tc) setInterval(function () { tc.textContent = fmt(video.currentTime || 0); }, 40);
   } else if (tc && !reduce) {

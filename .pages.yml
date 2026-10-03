@@ -124,6 +124,10 @@ content:
         label: Pozadinski video (vrh stranice)
         type: file
         description: "Showreel bez zvuka koji se vrti u pozadini. MP4 (H.264), 16:9, 1920 × 1080, 15–30 s, idealno do ~10 MB. Prazno = tamna pozadina."
+      - name: pozadinski_video_mobitel
+        label: Pozadinski video za mobitele (manja datoteka)
+        type: file
+        description: "Isti video u manjoj rezoluciji (960 × 540, do ~2 MB). Prikazuje se na uskim ekranima. Prazno = svugdje se koristi veliki video."
       - name: pozadinski_video_poster
         label: Slika dok se video učitava (16:9)
         type: image

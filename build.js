@@ -72,11 +72,14 @@ parts.RADOVI = radovi.map((w) => {
 const VIDEO_TYPES = { mp4: "video/mp4", m4v: "video/mp4", webm: "video/webm", mov: "video/quicktime" };
 const video = (postavke.pozadinski_video || "").trim();
 const poster = (postavke.pozadinski_video_poster || "").trim();
+const videoMob = (postavke.pozadinski_video_mobitel || "").trim();
+// Slika naslovnice je najveći element pri otvaranju stranice, pa se preuzima prva
+parts.PRELOAD = poster ? `<link rel="preload" as="image" href="${esc(poster)}" fetchpriority="high">` : "";
 if (video) {
   const ext = video.split("?")[0].split(".").pop().toLowerCase();
-  parts.HERO_MEDIA = `  <video class="hero-media" id="heroVideo" autoplay muted loop playsinline preload="auto"${poster ? ` poster="${esc(poster)}"` : ""} aria-hidden="true">
-    <source src="${esc(video)}" type="${VIDEO_TYPES[ext] || "video/mp4"}">
-  </video>`;
+  // Video se ne preuzima odmah: skripta u page.html postavlja izvor tek kad se stranica učita,
+  // a na uskim ekranima bira manju datoteku (pozadinski_video_mobitel).
+  parts.HERO_MEDIA = `  <video class="hero-media" id="heroVideo" muted loop playsinline preload="none"${poster ? ` poster="${esc(poster)}"` : ""} data-src="${esc(video)}"${videoMob ? ` data-src-mobitel="${esc(videoMob)}"` : ""} aria-hidden="true"></video>`;
   parts.HERO_TOGGLE = `  <button class="hero-toggle" id="heroToggle" type="button" aria-pressed="false" aria-label="Pauziraj pozadinski video">
     <svg class="i-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
     <svg class="i-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l11-6.5z"/></svg>
@@ -126,7 +129,7 @@ let html = fs.readFileSync(`${SRC}/page.html`, "utf8");
 for (const [key, value] of Object.entries(parts)) {
   html = html.split(`<!--${key}-->`).join(value);
 }
-if (BASE) html = html.replace(/(\s(?:src|href|poster)=")\/(?!\/)/g, `$1${BASE}/`);
+if (BASE) html = html.replace(/(\s(?:src|href|poster|data-src|data-src-mobitel)=")\/(?!\/)/g, `$1${BASE}/`);
 if (BASE) html = html.replace(/url\(\/fonts\//g, `url(${BASE}/fonts/`);
 
 fs.rmSync(OUT, { recursive: true, force: true });
