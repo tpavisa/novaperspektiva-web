@@ -351,12 +351,15 @@ footer .note{flex-basis:100%;margin:0;font-size:13px;line-height:1.5;color:var(-
       var src = (mob && window.matchMedia('(max-width: 760px)').matches) ? mob : video.getAttribute('data-src');
       if (src) video.src = src;
     };
-    var setPaused = function (p) {
-      if (p) video.pause(); else { ensureSrc(); var pr = video.play(); if (pr && pr.catch) pr.catch(function () {}); }
+    var showState = function (p) {
       if (btn) { btn.setAttribute('aria-pressed', p ? 'true' : 'false'); btn.setAttribute('aria-label', p ? 'Pokreni pozadinski video' : 'Pauziraj pozadinski video'); }
     };
-    // Video kreće tek kad se stranica učita, da ne usporava prikaz naslovnice
-    var start = function () { setPaused(reduce); };
+    var setPaused = function (p) {
+      if (p) video.pause(); else { ensureSrc(); video.muted = true; var pr = video.play(); if (pr && pr.catch) pr.catch(function () { showState(true); }); }
+      showState(p);
+    };
+    // Video kreće sam čim se stranica učita (i uz postavku "smanji pokrete"); može se pauzirati gumbom
+    var start = function () { setPaused(false); };
     if (document.readyState === 'complete') start(); else window.addEventListener('load', start);
     if (btn) btn.addEventListener('click', function () { setPaused(!video.paused ? true : false); });
     if (tc) setInterval(function () { tc.textContent = fmt(video.currentTime || 0); }, 40);
