@@ -1,0 +1,30 @@
+{
+  "slug": "video-podcast",
+  "objavljeno": true,
+  "naslov_stranice": "Video podcast Zagreb – snimanje i montaža | Nova Perspektiva",
+  "opis_za_google": "Snimanje i montaža video podcasta u Zagrebu: više kamera, zasebni mikrofoni, cijele epizode, kratki isječci za društvene mreže i naslovne slike za YouTube.",
+  "naziv_usluge": "Video podcast",
+  "naslov": "Video podcast od prve epizode do objave",
+  "uvod": "Snimamo i montiramo video podcaste za tvrtke, institucije, festivale i autore. Dolazimo s opremom u vaš prostor ili na lokaciju koja odgovara temi, a vi dobivate epizodu spremnu za YouTube i kratke isječke za društvene mreže.",
+  "uvod_2": "Možemo snimiti jednu epizodu ili preuzeti cijelu seriju: od formata i plana snimanja do montaže i objave. Za Nacionalni muzej moderne umjetnosti tako radimo seriju „Priče iz muzejske čuvaonice“.",
+  "sto_dobivate": [
+    "Snimanje s više kamera i zasebnim mikrofonom za svakog sugovornika",
+    "Montaža cijele epizode, obrada zvuka i korekcija boje",
+    "Kratki isječci najzanimljivijih trenutaka za Instagram, TikTok, YouTube Shorts i LinkedIn",
+    "Naslovne slike za YouTube u vašem vizualnom identitetu",
+    "Po dogovoru i opis, naslov te objava na YouTubeu"
+  ],
+  "radovi": ["Priče iz muzejske čuvaonice", "Supercast"],
+  "koraci": [
+    ["Format", "Dogovaramo temu, goste, trajanje epizode i izgled kadra."],
+    ["Snimanje", "Dolazimo s opremom, postavljamo kamere, zvuk i svjetlo i snimamo epizodu."],
+    ["Montaža", "Slažemo epizodu, čistimo zvuk, ujednačujemo boju i dodajemo grafiku."],
+    ["Objava", "Isporučujemo epizodu, isječke i naslovne slike, spremne za objavu."]
+  ],
+  "pitanja": [
+    ["Trebamo li vlastiti studio?", "Ne. Snimamo u vašem prostoru, uredu ili na lokaciji koja odgovara temi podcasta. Podcast Nacionalnog muzeja moderne umjetnosti, na primjer, snima se u muzejskoj čuvaonici, među djelima o kojima se govori."],
+    ["Što dobivamo osim cijele epizode?", "Uz epizodu za YouTube dobivate kratke isječke najzanimljivijih trenutaka za društvene mreže i naslovne slike. Po dogovoru pišemo i naslove i opise te objavljujemo epizode."],
+    ["Možete li preuzeti cijelu seriju?", "Da. Za redovite serije planiramo snimanja unaprijed, držimo isti izgled epizoda i isporučujemo ih prema rasporedu objave."],
+    ["Koliko košta snimanje video podcasta?", "Cijena ovisi o broju kamera, trajanju epizode, broju isječaka i tome radi li se o jednoj epizodi ili seriji. Pošaljite upit s osnovnim podacima i javit ćemo se s ponudom."]
+  ]
+}

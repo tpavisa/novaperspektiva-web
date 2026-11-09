@@ -54,7 +54,7 @@ parts.NAPOMENA = umami
 parts.KLIJENTI = klijenti.filter((k) => k && k.naziv)
   .map((k) => `    <b>${esc(k.naziv)}</b>`).join("\n");
 
-parts.RADOVI = radovi.map((w) => {
+const kartica = (w) => {
   const tag = w.link ? "a" : "div";
   const linkAttrs = w.link ? ` href="${esc(w.link)}" target="_blank" rel="noopener"` : "";
   const thumb = w.slika
@@ -67,7 +67,8 @@ parts.RADOVI = radovi.map((w) => {
       <div class="thumb">${thumb}<span class="corners">${CORNERS}</span>${w.link ? `<span class="mini">${PLAY_SMALL}</span>` : ""}</div>${oznaka}
       <div><h3>${esc(w.naslov)}</h3>${w.opis ? `<p>${esc(w.opis)}</p>` : ""}</div>
     </${tag}>`;
-}).join("\n");
+};
+parts.RADOVI = radovi.map(kartica).join("\n");
 
 const VIDEO_TYPES = { mp4: "video/mp4", m4v: "video/mp4", webm: "video/webm", mov: "video/quicktime" };
 const video = (postavke.pozadinski_video || "").trim();
@@ -173,11 +174,55 @@ fs.copyFileSync(`${SRC}/logo.svg`, `${OUT}/logo.svg`);
 if (fs.existsSync(`${SRC}/images`)) fs.cpSync(`${SRC}/images`, `${OUT}/images`, { recursive: true });
 if (fs.existsSync(`${SRC}/fonts`)) fs.cpSync(`${SRC}/fonts`, `${OUT}/fonts`, { recursive: true });
 
+// ---- stranice usluga: src/_data/usluge/<slug>.json + src/usluga.html -> _site/<slug>/index.html ----
+const uslugeDir = `${SRC}/_data/usluge`;
+const usluge = (fs.existsSync(uslugeDir) ? fs.readdirSync(uslugeDir) : [])
+  .filter((f) => f.endsWith(".json"))
+  .map((f) => readJson(path.join(uslugeDir, f), null))
+  .filter((u) => u && u.slug && u.objavljeno !== false);
+const uslugeUrls = [];
+if (usluge.length) {
+  const predlozak = fs.readFileSync(`${SRC}/usluga.html`, "utf8");
+  const stil = (fs.readFileSync(`${SRC}/page.html`, "utf8").match(/<style>[\s\S]*?<\/style>/) || [""])[0];
+  for (const u of usluge) {
+    const url = `${SITE}/${u.slug}/`;
+    const ld = [
+      { "@context": "https://schema.org", "@type": "Service", name: u.naziv_usluge, serviceType: u.naziv_usluge,
+        description: u.opis_za_google, url, areaServed: { "@type": "City", name: "Zagreb" },
+        provider: { "@id": `${SITE}/#nova-perspektiva` } },
+      { "@context": "https://schema.org", "@type": "FAQPage",
+        mainEntity: (u.pitanja || []).map(([q, a]) => ({ "@type": "Question", name: q, acceptedAnswer: { "@type": "Answer", text: a } })) },
+      { "@context": "https://schema.org", "@type": "BreadcrumbList", itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Nova Perspektiva", item: `${SITE}/` },
+        { "@type": "ListItem", position: 2, name: u.naziv_usluge, item: url } ] },
+    ];
+    const up = {
+      ...parts,
+      STIL: stil,
+      U_TITLE: esc(u.naslov_stranice), U_DESC: esc(u.opis_za_google), U_URL: url,
+      U_NAZIV: esc(u.naziv_usluge), U_H1: esc(u.naslov), U_UVOD: esc(u.uvod),
+      U_UVOD_2: u.uvod_2 ? `<p class="lead">${esc(u.uvod_2)}</p>` : "",
+      U_LD: `<script type="application/ld+json">${JSON.stringify(ld).replace(/</g, "\\u003c")}</script>`,
+      U_LISTA: (u.sto_dobivate || []).map((t) => `    <li><span class="dot sm" style="background:var(--orange)"></span>${esc(t)}</li>`).join("\n"),
+      U_RADOVI: (u.radovi || []).map((n) => radovi.find((w) => w.naslov === n)).filter(Boolean).map(kartica).join("\n"),
+      U_KORACI: (u.koraci || []).map(([b, t], i) => `    <li><span class="n" style="color:${["var(--cyan)","var(--blue)","var(--orange)","var(--coral)"][i % 4]}">0${i + 1}</span><b>${esc(b)}</b><span>${esc(t)}</span></li>`).join("\n"),
+      U_PITANJA: (u.pitanja || []).map(([q, a]) => `    <details><summary>${esc(q)}</summary><p>${esc(a)}</p></details>`).join("\n"),
+    };
+    let h = predlozak;
+    for (const [k, v] of Object.entries(up)) h = h.split(`<!--${k}-->`).join(v);
+    if (BASE) h = h.replace(/(\s(?:src|href|poster|data-src|data-src-mobitel)=")\/(?!\/)/g, `$1${BASE}/`);
+    if (BASE) h = h.replace(/url\(\/fonts\//g, `url(${BASE}/fonts/`);
+    fs.mkdirSync(`${OUT}/${u.slug}`, { recursive: true });
+    fs.writeFileSync(`${OUT}/${u.slug}/index.html`, h);
+    uslugeUrls.push(`/${u.slug}/`);
+  }
+}
+
 // Sitemap i robots.txt za tražilice
 const danas = new Date().toISOString().slice(0, 10);
 fs.writeFileSync(`${OUT}/sitemap.xml`, `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>${SITE}/</loc><lastmod>${danas}</lastmod></url>
+${["/", ...uslugeUrls].map((u) => `  <url><loc>${SITE}${u}</loc><lastmod>${danas}</lastmod></url>`).join("\n")}
 </urlset>
 `);
 fs.writeFileSync(`${OUT}/robots.txt`, `User-agent: *
