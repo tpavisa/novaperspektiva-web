@@ -124,6 +124,40 @@ parts.DRUSTVENE = [["instagram", "Instagram"], ["youtube", "YouTube"], ["linkedi
 
 parts.GODINA = String(new Date().getFullYear());
 
+// ---- podaci za tražilice i dijeljenje ----
+const SITE = "https://novaperspektiva.hr";
+const apsolutno = (p) => (/^https?:\/\//.test(p) ? p : SITE + (p.startsWith("/") ? p : "/" + p));
+const ogSlika = (postavke.og_slika || "/images/og-novaperspektiva.jpg").trim();
+parts.OG_SLIKA = ogSlika ? [
+  `<meta property="og:image" content="${esc(apsolutno(ogSlika))}">`,
+  `<meta property="og:image:width" content="1200">`,
+  `<meta property="og:image:height" content="630">`,
+  `<meta name="twitter:card" content="summary_large_image">`,
+].join("\n") : "";
+
+// Strukturirani podaci (schema.org): djelatnost s područjem rada, bez kućne adrese.
+const strukturirano = {
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "@id": `${SITE}/#nova-perspektiva`,
+  name: "Nova Perspektiva",
+  description: "Video produkcija iz Zagreba, od ideje do objave: promotivni videi, kratki videi za društvene mreže, video podcasti, dokumentarci i snimke događanja.",
+  url: `${SITE}/`,
+  logo: `${SITE}/logo.svg`,
+  image: apsolutno(ogSlika),
+  ...(postavke.email ? { email: postavke.email } : {}),
+  ...(tel ? { telephone: tel } : {}),
+  address: { "@type": "PostalAddress", addressLocality: "Zagreb", addressCountry: "HR" },
+  areaServed: [
+    { "@type": "City", name: "Zagreb" },
+    { "@type": "Country", name: "Hrvatska" },
+  ],
+  founder: { "@type": "Person", name: "Tomislav Paviša", jobTitle: "Video producent" },
+  knowsAbout: ["Video produkcija", "Promotivni video", "Video za društvene mreže", "Video podcast", "Dokumentarni video", "Snimanje događanja"],
+  sameAs: ["instagram", "youtube", "linkedin", "google_profil"].map((k) => postavke[k]).filter(Boolean),
+};
+parts.STRUKTURIRANI_PODACI = `<script type="application/ld+json">${JSON.stringify(strukturirano).replace(/</g, "\\u003c")}</script>`;
+
 // ---- sastavljanje ----
 let html = fs.readFileSync(`${SRC}/page.html`, "utf8");
 for (const [key, value] of Object.entries(parts)) {
@@ -138,5 +172,18 @@ fs.writeFileSync(`${OUT}/index.html`, html);
 fs.copyFileSync(`${SRC}/logo.svg`, `${OUT}/logo.svg`);
 if (fs.existsSync(`${SRC}/images`)) fs.cpSync(`${SRC}/images`, `${OUT}/images`, { recursive: true });
 if (fs.existsSync(`${SRC}/fonts`)) fs.cpSync(`${SRC}/fonts`, `${OUT}/fonts`, { recursive: true });
+
+// Sitemap i robots.txt za tražilice
+const danas = new Date().toISOString().slice(0, 10);
+fs.writeFileSync(`${OUT}/sitemap.xml`, `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>${SITE}/</loc><lastmod>${danas}</lastmod></url>
+</urlset>
+`);
+fs.writeFileSync(`${OUT}/robots.txt`, `User-agent: *
+Allow: /
+
+Sitemap: ${SITE}/sitemap.xml
+`);
 
 console.log(`Gotovo: ${radovi.length} radova, ${prep.length} preporuka -> ${OUT}/index.html`);

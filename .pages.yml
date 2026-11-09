@@ -144,6 +144,14 @@ content:
       - name: linkedin
         label: LinkedIn link
         type: string
+      - name: google_profil
+        label: Google profil tvrtke (link)
+        type: string
+        description: "Link na profil na Google kartama. Ne prikazuje se na stranici, samo pomaže Googleu povezati web i profil."
+      - name: og_slika
+        label: Slika za dijeljenje linka
+        type: image
+        description: "Prikazuje se kad netko podijeli link na društvenim mrežama ili u porukama. 1200 × 630 px, JPG. Prazno = zadana slika."
       - name: umami_id
         label: Umami Website ID (analitika bez kolačića)
         type: string
